@@ -20,6 +20,10 @@ namespace Microshop.DatabaseFirstApi
             var connectionString = builder.Configuration.GetConnectionString("OrderDbConnection");
             builder.Services.AddDbContext<OrderDbContext>(options => options.UseSqlServer(connectionString));
 
+            // IgnoreCycles: Customer -> Orders -> Customer skulle annars ge en oändlig loop i JSON
+            builder.Services.AddControllers().AddJsonOptions(options => options.JsonSerializerOptions.ReferenceHandler =
+                System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles);
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
